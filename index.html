@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Conversor leve de imagens da FBF para redimensionar, padronizar e baixar arquivos em ZIP.">
+  <title>Conversor de Imagens FBF</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <main class="shell">
+    <section class="hero" aria-labelledby="pageTitle">
+      <div>
+        <p class="eyebrow">FBF Tools</p>
+        <h1 id="pageTitle">Conversor de Imagens</h1>
+        <p class="sub">Padronize imagens em 1000x750 e gere tambem uma copia PNG transparente com IA local.</p>
+      </div>
+
+      <div class="summary" aria-live="polite">
+        <span id="fileCount">0 arquivos</span>
+        <strong id="readyCount">0 prontos</strong>
+      </div>
+    </section>
+
+    <section class="panel config" aria-label="Configuracoes de conversao">
+      <div class="field">
+        <label for="width">Largura</label>
+        <input type="number" id="width" value="1000" min="1" max="8000" inputmode="numeric">
+      </div>
+
+      <div class="field">
+        <label for="height">Altura</label>
+        <input type="number" id="height" value="750" min="1" max="8000" inputmode="numeric">
+      </div>
+
+      <div class="field">
+        <label for="format">Formato final</label>
+        <select id="format">
+          <option value="jpeg">JPG</option>
+          <option value="png">PNG</option>
+          <option value="webp">WEBP</option>
+        </select>
+      </div>
+
+      <label class="checkField" for="transparentCopy">
+        <input type="checkbox" id="transparentCopy" checked>
+        <span>
+          <strong>PNG transparente</strong>
+          <small>Remove o fundo no navegador com IA local</small>
+        </span>
+      </label>
+    </section>
+
+    <section class="upload panel" id="dropArea" aria-label="Adicionar imagens">
+      <input type="file" id="fileInput" multiple accept=".heic,.heif,.jpg,.jpeg,.png,.webp,image/heic,image/heif,image/jpeg,image/png,image/webp">
+
+      <div class="uploadCopy">
+        <strong>Selecione ou arraste imagens aqui</strong>
+        <span>JPG, PNG, WEBP, HEIC e HEIF. O ZIP pode trazer o formato escolhido + PNG recortado por IA.</span>
+      </div>
+    </section>
+
+    <section class="queueHeader" aria-live="polite">
+      <div>
+        <h2>Fila de conversao</h2>
+        <p id="globalStatus">Nenhuma imagem adicionada.</p>
+      </div>
+
+      <button type="button" id="clearBtn" class="ghostBtn" disabled>Limpar fila</button>
+    </section>
+
+    <div class="progressWrap" aria-hidden="true">
+      <div id="progressBar"></div>
+    </div>
+
+    <section id="list" class="list" aria-label="Arquivos selecionados"></section>
+
+    <button type="button" id="convertBtn" class="primaryBtn" disabled>
+      Converter e baixar ZIP
+    </button>
+  </main>
+</body>
+</html>
