@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Conversor de Imagens FBF</title>
 
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 
   <script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -13,63 +13,73 @@
 <body>
 
   <main class="container">
+
     <h1>Conversor de Imagens</h1>
     <p class="subtitle">
-      Redimensione e converta fotos para o padrão do site.
+      Redimensione e converta imagens para o padrão do site.
     </p>
 
     <section class="controls">
-      <div class="config-grid">
 
-        <div class="field">
-          <label>Largura</label>
-          <input type="number" id="width" value="1000" />
-        </div>
-
-        <div class="field">
-          <label>Altura</label>
-          <input type="number" id="height" value="750" />
-        </div>
-
-        <div class="field">
-          <label>Formato</label>
-          <select id="format">
-            <option value="jpeg">JPG</option>
-            <option value="png">PNG</option>
-            <option value="webp">WEBP</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label>Qualidade JPG</label>
-          <input type="range" id="quality" min="10" max="100" value="90" />
-          <span id="qualityValue">90%</span>
-        </div>
-
+      <div class="field">
+        <label>Largura</label>
+        <input type="number" id="width" value="1000">
       </div>
+
+      <div class="field">
+        <label>Altura</label>
+        <input type="number" id="height" value="750">
+      </div>
+
+      <div class="field">
+        <label>Formato</label>
+
+        <select id="format">
+          <option value="jpeg">JPG</option>
+          <option value="png">PNG</option>
+          <option value="webp">WEBP</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Qualidade JPG</label>
+
+        <input type="range" id="quality" min="10" max="100" value="90">
+
+        <span id="qualityValue">90%</span>
+      </div>
+
     </section>
 
     <section class="upload-area" id="dropArea">
+
       <input
         type="file"
         id="fileInput"
-        multiple
         accept=".heic,.jpg,.jpeg,.png,.webp"
+        multiple
         hidden
-      />
+      >
 
-      <button id="selectButton">Selecionar Fotos</button>
+      <button id="selectButton">
+        Selecionar Fotos
+      </button>
 
-      <p>ou arraste as imagens aqui</p>
+      <p>ou arraste os arquivos aqui</p>
+
     </section>
 
     <section id="fileList" class="file-list"></section>
 
     <div class="actions">
-      <button id="convertButton">Converter e Baixar</button>
+      <button id="convertButton">
+        Converter e Baixar
+      </button>
     </div>
+
   </main>
 
   <script src="script.js"></script>
+
 </body>
 </html>
