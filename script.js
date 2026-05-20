@@ -1,200 +1,159 @@
-const fileInput = document.getElementById('fileInput');
-const selectButton = document.getElementById('selectButton');
-const dropArea = document.getElementById('dropArea');
-const fileList = document.getElementById('fileList');
-const convertButton = document.getElementById('convertButton');
+const fileInput = document.getElementById("fileInput");
+const list = document.getElementById("list");
+const convertBtn = document.getElementById("convertBtn");
+const dropArea = document.getElementById("dropArea");
 
-const widthInput = document.getElementById('width');
-const heightInput = document.getElementById('height');
-const formatInput = document.getElementById('format');
-const qualityInput = document.getElementById('quality');
-const qualityValue = document.getElementById('qualityValue');
+const widthInput = document.getElementById("width");
+const heightInput = document.getElementById("height");
+const formatInput = document.getElementById("format");
 
 let queue = [];
 
-qualityInput.addEventListener('input', () => {
-  qualityValue.innerText = qualityInput.value + '%';
+fileInput.addEventListener("change", (e) => {
+  addFiles(e.target.files);
 });
 
-selectButton.addEventListener('click', () => {
-  fileInput.click();
+dropArea.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropArea.classList.add("drag");
 });
 
-fileInput.addEventListener('change', (e) => {
-  handleFiles(e.target.files);
+dropArea.addEventListener("dragleave", () => {
+  dropArea.classList.remove("drag");
 });
 
-['dragenter','dragover'].forEach(eventName => {
-  dropArea.addEventListener(eventName, (e) => {
-    e.preventDefault();
-    dropArea.classList.add('dragover');
-  });
+dropArea.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropArea.classList.remove("drag");
+
+  addFiles(e.dataTransfer.files);
 });
 
-['dragleave','drop'].forEach(eventName => {
-  dropArea.addEventListener(eventName, (e) => {
-    e.preventDefault();
-    dropArea.classList.remove('dragover');
-  });
-});
-
-dropArea.addEventListener('drop', (e) => {
-  handleFiles(e.dataTransfer.files);
-});
-
-async function handleFiles(files){
+async function addFiles(files){
 
   for(const file of files){
 
+    const id = Date.now() + Math.random();
+
     const item = {
-      id: crypto.randomUUID(),
-      file,
-      status:'Aguardando'
+      id:id,
+      file:file
     };
 
     queue.push(item);
 
-    await renderCard(item);
+    await renderItem(item);
   }
 }
 
-async function renderCard(item){
+async function renderItem(item){
 
-  const card = document.createElement('div');
-  card.className = 'card';
-  card.id = item.id;
+  let blob = item.file;
 
-  const preview = await createPreview(item.file);
-
-  card.innerHTML = `
-    <img src="${preview}">
-
-    <strong>${item.file.name}</strong>
-
-    <div>
-      ${(item.file.size / 1024 / 1024).toFixed(2)} MB
-    </div>
-
-    <input
-      type="text"
-      value="${removeExtension(item.file.name)}"
-      class="rename"
-    >
-
-    <div class="status">
-      ${item.status}
-    </div>
-
-    <button class="remove">
-      Remover
-    </button>
-  `;
-
-  card.querySelector('.remove').addEventListener('click', () => {
-    queue = queue.filter(q => q.id !== item.id);
-    card.remove();
-  });
-
-  fileList.appendChild(card);
-}
-
-async function createPreview(file){
-
-  let blob = file;
-
-  if(file.name.toLowerCase().endsWith('.heic')){
+  if(item.file.name.toLowerCase().endsWith(".heic")){
 
     blob = await heic2any({
-      blob:file,
-      toType:'image/jpeg'
+      blob:item.file,
+      toType:"image/jpeg"
     });
   }
 
-  return URL.createObjectURL(blob);
+  const url = URL.createObjectURL(blob);
+
+  const div = document.createElement("div");
+
+  div.className = "card";
+  div.id = item.id;
+
+  div.innerHTML = `
+    <img src="${url}">
+
+    <p><strong>${item.file.name}</strong></p>
+
+    <input
+      class="rename"
+      value="${removeExt(item.file.name)}"
+    >
+
+    <p class="status">Aguardando</p>
+  `;
+
+  list.appendChild(div);
 }
 
-convertButton.addEventListener('click', async () => {
+convertBtn.addEventListener("click", async () => {
 
-  if(!queue.length){
-    alert('Adicione imagens.');
+  if(queue.length === 0){
+    alert("Adicione imagens.");
     return;
   }
 
-  const processed = [];
   const zip = new JSZip();
+  let total = 0;
 
   for(const item of queue){
 
     const card = document.getElementById(item.id);
-    const status = card.querySelector('.status');
-    const rename = card.querySelector('.rename').value;
+    const status = card.querySelector(".status");
+    const rename = card.querySelector(".rename").value;
+
+    status.innerText = "Convertendo...";
 
     try{
 
-      status.innerText = 'Convertendo';
+      const blob = await convertImage(item.file);
 
-      const blob = await processImage(item.file);
-
-      const ext = formatInput.value === 'jpeg'
-        ? 'jpg'
+      const ext = formatInput.value === "jpeg"
+        ? "jpg"
         : formatInput.value;
 
-      const filename = rename + '.' + ext;
+      zip.file(rename + "." + ext, blob);
 
-      processed.push({
-        name:filename,
-        blob
-      });
+      status.innerText = "Concluído";
 
-      status.innerText = 'Concluído';
+      total++;
 
-    }catch(error){
+    }catch(e){
 
-      console.error(error);
-      status.innerText = 'Erro';
+      console.error(e);
+
+      status.innerText = "Erro";
     }
   }
 
-  if(processed.length === 1){
-
-    downloadBlob(
-      processed[0].blob,
-      processed[0].name
-    );
-
+  if(total === 0){
+    alert("Nenhuma imagem convertida.");
     return;
   }
 
-  processed.forEach(file => {
-    zip.file(file.name, file.blob);
+  const content = await zip.generateAsync({
+    type:"blob"
   });
 
-  const zipBlob = await zip.generateAsync({
-    type:'blob'
-  });
+  const a = document.createElement("a");
 
-  downloadBlob(
-    zipBlob,
-    'imagens-convertidas.zip'
-  );
+  a.href = URL.createObjectURL(content);
+  a.download = "imagens-convertidas.zip";
+
+  a.click();
 });
 
-async function processImage(file){
+async function convertImage(file){
 
   let blob = file;
 
-  if(file.name.toLowerCase().endsWith('.heic')){
+  if(file.name.toLowerCase().endsWith(".heic")){
 
     blob = await heic2any({
       blob:file,
-      toType:'image/jpeg'
+      toType:"image/jpeg"
     });
   }
 
   const img = await loadImage(blob);
 
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
 
   const width = parseInt(widthInput.value);
   const height = parseInt(heightInput.value);
@@ -202,7 +161,7 @@ async function processImage(file){
   canvas.width = width;
   canvas.height = height;
 
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = "#ffffff";
   ctx.fillRect(0,0,width,height);
 
   const scale = Math.min(
@@ -210,28 +169,20 @@ async function processImage(file){
     height / img.height
   );
 
-  const newWidth = img.width * scale;
-  const newHeight = img.height * scale;
+  const w = img.width * scale;
+  const h = img.height * scale;
 
-  const x = (width - newWidth) / 2;
-  const y = (height - newHeight) / 2;
+  const x = (width - w) / 2;
+  const y = (height - h) / 2;
 
-  ctx.drawImage(
-    img,
-    x,
-    y,
-    newWidth,
-    newHeight
-  );
+  ctx.drawImage(img,x,y,w,h);
 
-  const mime = getMimeType(formatInput.value);
-
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
 
     canvas.toBlob(
       resolve,
-      mime,
-      qualityInput.value / 100
+      "image/" + formatInput.value,
+      0.9
     );
 
   });
@@ -250,39 +201,6 @@ function loadImage(blob){
   });
 }
 
-function getMimeType(format){
-
-  switch(format){
-
-    case 'png':
-      return 'image/png';
-
-    case 'webp':
-      return 'image/webp';
-
-    default:
-      return 'image/jpeg';
-  }
-}
-
-function removeExtension(name){
-  return name.replace(/\.[^/.]+$/, '');
-}
-
-function downloadBlob(blob, filename){
-
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement('a');
-
-  a.href = url;
-  a.download = filename;
-
-  document.body.appendChild(a);
-
-  a.click();
-
-  a.remove();
-
-  URL.revokeObjectURL(url);
+function removeExt(name){
+  return name.replace(/\.[^/.]+$/, "");
 }

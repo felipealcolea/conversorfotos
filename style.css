@@ -1,127 +1,79 @@
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
 body{
-  font-family:Arial,sans-serif;
+  font-family:Arial;
   background:#fff;
-  color:#222;
+  margin:0;
   padding:20px;
 }
 
 .container{
   max-width:1200px;
-  margin:0 auto;
+  margin:auto;
 }
 
-h1{
-  font-size:32px;
-  margin-bottom:8px;
-}
-
-.subtitle{
+.sub{
   color:#666;
-  margin-bottom:25px;
 }
 
-.controls{
+.config{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
   gap:15px;
-  background:#f7f7f7;
+  margin:20px 0;
   padding:20px;
-  border-radius:12px;
   border:1px solid #ddd;
-  margin-bottom:20px;
+  border-radius:10px;
 }
 
-.field{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
+.config input,
+.config select{
+  width:100%;
+  padding:10px;
+  margin-top:5px;
 }
 
-.field label{
-  font-weight:bold;
-}
-
-.field input,
-.field select{
-  padding:12px;
-  border-radius:8px;
-  border:1px solid #ccc;
-}
-
-.upload-area{
+.upload{
   border:2px dashed #bbb;
-  border-radius:12px;
-  padding:60px 20px;
+  padding:50px;
   text-align:center;
-  transition:.2s;
+  border-radius:10px;
 }
 
-.upload-area.dragover{
-  border-color:#000;
+.upload.drag{
   background:#f3f3f3;
 }
 
-button{
-  background:#111;
-  color:#fff;
-  border:none;
-  border-radius:10px;
-  padding:14px 20px;
-  cursor:pointer;
-}
-
-button:hover{
-  opacity:.9;
-}
-
-.file-list{
-  margin-top:20px;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:16px;
+#fileInput{
+  margin-bottom:15px;
 }
 
 .card{
   border:1px solid #ddd;
-  border-radius:12px;
-  padding:15px;
+  border-radius:10px;
+  padding:10px;
+  margin-top:15px;
 }
 
 .card img{
   width:100%;
+  max-width:250px;
   height:180px;
   object-fit:contain;
   background:#f3f3f3;
-  border-radius:8px;
-  margin-bottom:10px;
 }
 
-.card input{
+.rename{
   width:100%;
   margin-top:10px;
   padding:10px;
-  border-radius:8px;
-  border:1px solid #ccc;
 }
 
-.status{
-  margin-top:10px;
-  font-size:14px;
-  font-weight:bold;
-}
-
-.actions{
+#convertBtn{
   margin-top:30px;
-  text-align:center;
-}
-
-.actions button{
   width:100%;
-  max-width:320px;
+  padding:16px;
+  border:none;
+  border-radius:10px;
+  background:#111;
+  color:#fff;
+  cursor:pointer;
 }
