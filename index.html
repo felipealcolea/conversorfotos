@@ -4,68 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Conversor FBF</title>
-
 <link rel="stylesheet" href="style.css">
-
 <script src="https://cdn.jsdelivr.net/npm/heic2any/dist/heic2any.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
-
 <body>
-
-<div class="container">
-
-  <h1>Conversor de Imagens</h1>
-  <p class="sub">
-    Redimensione imagens para 1000x750
-  </p>
-
-  <div class="config">
-
-    <div>
-      <label>Largura</label>
-      <input type="number" id="width" value="1000">
-    </div>
-
-    <div>
-      <label>Altura</label>
-      <input type="number" id="height" value="750">
-    </div>
-
-    <div>
-      <label>Formato</label>
-
-      <select id="format">
-        <option value="jpeg">JPG</option>
-        <option value="png">PNG</option>
-        <option value="webp">WEBP</option>
-      </select>
-    </div>
-
-  </div>
-
-  <div class="upload" id="dropArea">
-
-    <input
-      type="file"
-      id="fileInput"
-      multiple
-      accept=".heic,.jpg,.jpeg,.png,.webp"
-    >
-
-    <p>Selecione ou arraste arquivos aqui</p>
-
-  </div>
-
-  <div id="list"></div>
-
-  <button id="convertBtn">
-    Converter e Baixar
-  </button>
-
-</div>
-
+<h1>Conversor FBF</h1>
+<input type="file" id="fileInput" multiple accept=".heic,.jpg,.jpeg,.png,.webp">
+<div id="list"></div>
+<button id="convertBtn">Converter</button>
 <script src="script.js"></script>
-
 </body>
 </html>
